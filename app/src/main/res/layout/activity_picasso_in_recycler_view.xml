@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ff0"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="lab.funwith.picasso.model.PicassoInRecyclerViewActivity">
+    android:background="#fff"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin">
+
+    <include
+        android:id="@+id/radio_group_panel_3"
+        layout="@layout/radio_group_panel_3"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/model_recycler_view"
@@ -17,5 +19,4 @@
         android:layout_height="match_parent"
         />
 
-
-</RelativeLayout>
+</LinearLayout>

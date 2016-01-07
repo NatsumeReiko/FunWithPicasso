@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lab.funwith.picasso.Utility.Constant;
+import lab.funwith.picasso.data.Constant;
 
 public class MainActivity extends ListActivity {
 

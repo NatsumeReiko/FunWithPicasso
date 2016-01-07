@@ -1,4 +1,4 @@
-package lab.funwith.picasso.Utility;
+package lab.funwith.picasso.data;
 
 public class Constant {
 

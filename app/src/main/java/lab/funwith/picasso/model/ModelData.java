@@ -1,6 +1,6 @@
 package lab.funwith.picasso.model;
 
-import lab.funwith.picasso.ConstantViewType;
+import lab.funwith.picasso.data.ConstantViewType;
 
 public class ModelData {
     public String pictureUrl;
