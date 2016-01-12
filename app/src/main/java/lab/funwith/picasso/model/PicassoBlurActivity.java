@@ -9,29 +9,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import lab.funwith.picasso.R;
-import lab.funwith.picasso.data.ConstantLayoutType;
 import lab.funwith.picasso.data.ConstantUrlData;
+import lab.funwith.picasso.data.ConstantViewType;
 import lab.funwith.picasso.manager.PicassoManager;
 
 import static android.support.v7.widget.RecyclerView.VERTICAL;
 import static android.view.View.VISIBLE;
 import static lab.funwith.picasso.data.ConstantViewType.PICTURE_LEFT;
+import static lab.funwith.picasso.data.ConstantViewType.PICTURE_LEFT_BLUR;
+import static lab.funwith.picasso.data.ConstantViewType.PICTURE_LEFT_BLUR_GRAY_SCALE;
 import static lab.funwith.picasso.data.ConstantViewType.PICTURE_RIGHT;
+import static lab.funwith.picasso.data.ConstantViewType.PICTURE_RIGHT_BLUR;
+import static lab.funwith.picasso.data.ConstantViewType.PICTURE_RIGHT_BLUR_GRAY_SCALE;
 
-public class PicassoInRecyclerViewActivity extends Activity {
-    private static final int IMAGE_MAX_WIDTH = 100;
-    private static final int IMAGE_MAX_HEIGHT = 150;
-
+public class PicassoBlurActivity extends Activity {
     private RecyclerView recycleView;
     private RecycleViewerAdapter adapter;
     private LinearLayoutManager mLayoutManager;
@@ -42,8 +42,9 @@ public class PicassoInRecyclerViewActivity extends Activity {
 
     private Picasso picasso;
 
-    @ConstantLayoutType.ViewType
-    private int currentImageSizeMode = ConstantLayoutType.IMAGE_SIZE_FIXED;
+
+    List<Transformation> grayScaleTransformations = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,48 +59,11 @@ public class PicassoInRecyclerViewActivity extends Activity {
 
         picasso = PicassoManager.getInstance(appContext).getPicasso();
 
+        grayScaleTransformations.add(new GrayscaleTransformation(Picasso.with(appContext)));
+        grayScaleTransformations.add(new BlurTransformation(appContext));
+
         makeData();
         setRecyclerView();
-        setRadioGroup();
-
-    }
-
-    private void setRadioGroup() {
-        final RadioButton radioButton1 = ButterKnife.findById(this, R.id.radio_1);
-        radioButton1.setText("size fixed");
-
-        final RadioButton radioButton2 = ButterKnife.findById(this, R.id.radio_2);
-        radioButton2.setText("size not fixed");
-
-        final RadioButton radioButton3 = ButterKnife.findById(this, R.id.radio_3);
-        radioButton3.setText("max size fixed");
-
-        final RadioGroup radioGroup = ButterKnife.findById(this, R.id.radio_group_panel_3);
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.radio_1: {
-                        currentImageSizeMode = ConstantLayoutType.IMAGE_SIZE_FIXED;
-                    }
-                    break;
-                    case R.id.radio_2: {
-                        currentImageSizeMode = ConstantLayoutType.IMAGE_SIZE_NOT_FIXED;
-                    }
-                    break;
-                    case R.id.radio_3: {
-                        currentImageSizeMode = ConstantLayoutType.IMAGE_SIZE_MAX_FIXED;
-                    }
-                    break;
-                }
-
-                adapter = new RecycleViewerAdapter();
-                recycleView.setAdapter(adapter);
-            }
-
-        });
-        radioGroup.setVisibility(VISIBLE);
     }
 
     private void makeData() {
@@ -108,8 +72,23 @@ public class PicassoInRecyclerViewActivity extends Activity {
                 final ModelData dataLeft = new ModelData(url, PICTURE_LEFT);
                 recycleList.add(dataLeft);
 
+                final ModelData dataLeftblur = new ModelData(url, PICTURE_LEFT_BLUR);
+                recycleList.add(dataLeftblur);
+
+                final ModelData dataLeftblurGray = new ModelData(url, PICTURE_LEFT_BLUR_GRAY_SCALE);
+                recycleList.add(dataLeftblurGray);
+
+                /**/
+
                 final ModelData dataRight = new ModelData(url, PICTURE_RIGHT);
                 recycleList.add(dataRight);
+
+                final ModelData dataRightBlur = new ModelData(url, ConstantViewType.PICTURE_RIGHT_BLUR);
+                recycleList.add(dataRightBlur);
+
+                final ModelData dataRightBlurGray = new ModelData(url, ConstantViewType.PICTURE_RIGHT_BLUR_GRAY_SCALE);
+                recycleList.add(dataRightBlurGray);
+
             }
         }
 
@@ -159,6 +138,11 @@ public class PicassoInRecyclerViewActivity extends Activity {
             switch (viewType) {
                 case PICTURE_LEFT:
                 case PICTURE_RIGHT:
+                case PICTURE_LEFT_BLUR:
+                case PICTURE_RIGHT_BLUR:
+                case PICTURE_LEFT_BLUR_GRAY_SCALE:
+                case PICTURE_RIGHT_BLUR_GRAY_SCALE:
+
                     return new PictureViewHolder(v);
 
                 default:
@@ -168,22 +152,14 @@ public class PicassoInRecyclerViewActivity extends Activity {
 
         private int getLayoutID(final int type) {
             switch (type) {
+                case PICTURE_LEFT_BLUR_GRAY_SCALE:
+                case PICTURE_LEFT_BLUR:
                 case PICTURE_LEFT:
-                    if (currentImageSizeMode == ConstantLayoutType.IMAGE_SIZE_FIXED) {
-                        return R.layout.picture_left_item_fixed_size;
-                    } else if (currentImageSizeMode == ConstantLayoutType.IMAGE_SIZE_MAX_FIXED) {
-                        return R.layout.picture_left_item_max_fixed_size;
-                    } else {
-                        return R.layout.picture_left_item_not_fixed_size;
-                    }
+                    return R.layout.picture_left_item_fixed_size;
+                case PICTURE_RIGHT_BLUR_GRAY_SCALE:
+                case PICTURE_RIGHT_BLUR:
                 case PICTURE_RIGHT:
-                    if (currentImageSizeMode == ConstantLayoutType.IMAGE_SIZE_FIXED) {
-                        return R.layout.picture_right_item_fixed_size;
-                    } else if (currentImageSizeMode == ConstantLayoutType.IMAGE_SIZE_MAX_FIXED) {
-                        return R.layout.picture_right_item_max_fixed_size;
-                    } else {
-                        return R.layout.picture_right_item_not_fixed_size;
-                    }
+                    return R.layout.picture_right_item_fixed_size;
                 default:
                     throw new IllegalArgumentException("No Such type");
             }
@@ -196,41 +172,53 @@ public class PicassoInRecyclerViewActivity extends Activity {
             }
         }
 
-        private String getTalkMessageResponse(final int position) {
+        private ModelData getTalkMessageResponse(final int position) {
             synchronized (recycleList) {
-                return recycleList.get(position).pictureUrl;
+                return recycleList.get(position);
             }
         }
 
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-            final String itemUrl = getTalkMessageResponse(position);
-
             if (holder instanceof PictureViewHolder) {
-                setPictureViewHolder((PictureViewHolder) holder, itemUrl);
+                setPictureViewHolder((PictureViewHolder) holder, getTalkMessageResponse(position));
             }
 
         }
 
-        private void setPictureViewHolder(final PictureViewHolder holder, final String pictureUrl) {
-            if (currentImageSizeMode == ConstantLayoutType.IMAGE_SIZE_MAX_FIXED) {
+        private void setPictureViewHolder(final PictureViewHolder holder, final ModelData item) {
+            switch (item.viewType) {
+                case PICTURE_LEFT:
+                case PICTURE_RIGHT: {
+                    picasso.load(item.pictureUrl)
+                            .placeholder(R.color.color_ff886622)
+                            .error(R.color.color_fff16622)
+                            .into(holder.picture);
+                }
+                break;
+                case PICTURE_LEFT_BLUR:
+                case PICTURE_RIGHT_BLUR: {
+                    picasso.load(item.pictureUrl)
+                            .placeholder(R.color.color_ff886622)
+                            .transform(new BlurTransformation(appContext))
+                            .error(R.color.color_fff16622)
+                            .into(holder.picture);
 
-                final int size = (int) Math.ceil(Math.sqrt(IMAGE_MAX_WIDTH * IMAGE_MAX_HEIGHT));
+                }
+                break;
+                case PICTURE_LEFT_BLUR_GRAY_SCALE:
+                case PICTURE_RIGHT_BLUR_GRAY_SCALE: {
+                    picasso.load(item.pictureUrl)
+                            .placeholder(R.color.color_ff886622)
+                            .transform(grayScaleTransformations)
+                            .error(R.color.color_fff16622)
+                            .into(holder.picture);
 
-                picasso.load(pictureUrl)
-                        .placeholder(R.color.color_ff886622)
-                        .transform(new BitmapTransform(IMAGE_MAX_WIDTH, IMAGE_MAX_HEIGHT))
-                        .resize(size, size)
-                        .error(R.color.color_fff16622)
-                        .centerInside()
-                        .into(holder.picture);
-            } else {
-
-                picasso.load(pictureUrl)
-                        .placeholder(R.color.color_ff886622)
-                        .error(R.color.color_fff16622)
-                        .into(holder.picture);
+                }
+                break;
+                default:
+                    throw new IllegalArgumentException("No Such type");
             }
         }
 

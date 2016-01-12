@@ -22,18 +22,27 @@
             </intent-filter>
         </activity>
 
-        <!-- <activity -->
-        <!-- android:name=".softinputmode.InputModeSimpleShowCase" -->
-        <!-- android:label="Soft input mode/InputModeSimpleShowCase"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN"/> -->
-        <!-- <category android:name="lab.funwith.picasso.SAMPLE_CODE"/> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
 
         <activity
             android:name=".model.PicassoInRecyclerViewActivity"
             android:label="model/PicassoInRecyclerViewActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="lab.funwith.picasso.SAMPLE_CODE"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".model.PicassoRotationActivity"
+            android:label="model/PicassoRotationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="lab.funwith.picasso.SAMPLE_CODE"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".model.PicassoBlurActivity"
+            android:label="model/PicassoBlurActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="lab.funwith.picasso.SAMPLE_CODE"/>

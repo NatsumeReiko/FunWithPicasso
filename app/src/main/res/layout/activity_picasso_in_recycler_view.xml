@@ -9,6 +9,8 @@
     android:padding="@dimen/activity_vertical_margin">
 
     <include
+        android:visibility="gone"
+        tools:visibility="visible"
         android:id="@+id/radio_group_panel_3"
         layout="@layout/radio_group_panel_3"
         />
